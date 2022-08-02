@@ -165,13 +165,13 @@ class Block:
             self.data["parser"] = parser
 
     def setNumeric(self, start=1, end=1, pertask=1, increment=1):
-        """Missing DocString
+        """Set all parameters for the block to be numeric thus it automatically
+        creates tasks.
 
-        :param int start:
-        :param int end:
-        :param int pertask:
-        :param int increment:
-        :return:
+        :param int start: start frame number
+        :param int end: end frame number
+        :param int pertask: number of frames per task
+        :param int increment: frame increment (stepsize)
         """
         if len(self.tasks):
             print('Error: Block.setNumeric: Block already has tasks.')
@@ -197,11 +197,24 @@ class Block:
         """
         self.data["frames_per_task"] = int(value)
 
-    def setSequential(self, value):
-        """Missing DocString
+    def setSequential(self, value=1):
+        """
+        Sets the 'sequential' parameter that determines the order in which
+        tasks of a block get solved. The 'sequential' parameter is used only
+        for the sequential calculation, not for the task number.
+        Possible values for the 'sequential' parameter are:
 
-        :param value:
-        :return:
+        1 (default, even when this function never gets called): tasks will be
+        solved from first to last, one by one.
+        -1: tasks will be solved from last to first, one by one.
+        Greater than 1 (e.g. 10): every 10th tasks will be solved at first and
+        all other tasks after.
+        Smaller than -1 (e.g. -10): dos the same than with 10 but in reverse
+        order.
+        0: always the middle task will be solved. Example: in a frame range
+        1-100, task solving order will be: 1,100,50,25,75 and so on.
+
+        :param int value: 'sequential' value for the block
         """
         self.data["sequential"] = int(value)
 
@@ -228,9 +241,8 @@ class Block:
     def setWorkingDirectory(self, working_directory, TransferToServer=True):
         """Missing DocString
 
-        :param working_directory:
-        :param TransferToServer:
-        :return:
+        :param str working_directory: tasks process working directory
+        :param bool TransferToServer: convert working_directory to a server path
         """
         if TransferToServer:
             working_directory = Pathmap.toServer(working_directory)
@@ -290,11 +302,12 @@ class Block:
             self.data["files"].append(afile)
 
     def setEnv(self, i_name, i_value, i_transfer_to_server=True):
-        """Missing DocString
+        """Add extra environment variable for the tasks process. Optioanny
+        this function can convert the value, if it's a path string, to a
+        server path.
 
-        :param i_name:
+        :param str i_name:
         :param i_value:
-        :return:
         """
         if "environment" not in self.data:
             self.data["environment"] = dict()
@@ -419,7 +432,15 @@ class Block:
         """
         self.data['flags'] = afcommon.setBlockFlag(self.data['flags'], 'dependsubtask')
 
-    def setTasksMaxRunTime(self, value): self.setTaskMaxRunTime(value)
+    def setTasksMaxRunTime(self, value):
+        """Missing DocString
+
+        :param value:
+        :return:
+        """
+
+        self.setTaskMaxRunTime(value)
+
     def setTaskMaxRunTime(self, value):
         """Missing DocString
 
@@ -630,7 +651,7 @@ class Job:
             print('Warning: priority clamped to maximum = %d' % priority)
 
         self.data["priority"] = int(priority)
-        
+
     def setCmdPre(self, command, TransferToServer=True):
         """Missing DocString
 
@@ -729,8 +750,11 @@ class Job:
     def send(self, verbose=False):
         """Missing DocString
 
-        :param verbose:
-        :return:
+        :param optional bool verbose: True (default) to force the sendServer()
+            function to print out more information.
+        :return tuple(bool, any): the return tuple of sendServer
+            - bool that indicates whether the sending was successful or not
+            - optional answer data struct received from the server
         """
         if len(self.blocks) == 0:
             print('Error: Job has no blocks')
@@ -746,7 +770,8 @@ class Job:
             # Try to set output folder from files:
             for block in self.blocks:
                 if "files" in block.data and len(block.data["files"]):
-                    self.data["folders"][block.data['name']] = os.path.dirname(block.data["files"][0])
+                    self.data["folders"][block.data['name']] = \
+                        os.path.dirname(block.data["files"][0])
 
         # Set branch if empty:
         if 'branch' not in self.data:
