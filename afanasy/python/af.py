@@ -724,20 +724,23 @@ class Job:
             block.fillTasks()
             self.data["blocks"].append(block.data)
 
-    def checkJob(self):
-        """Missing DocString
+    def checkJob(self, verbose=False):
+        """Ensures all blocks of the job are either set to be "numberic" or
+        contain at least one task. Jobs with blocks that do not meet these
+        criteria can crash the server.
 
-        :return:
+        :param optional bool verbose: Set to True will print out more
+            information.
+        :return bool: True for passed, False for failed
         """
         error = False
         for block in self.blocks:
             if block.data['flags'] == 0 and len(block.tasks) == 0:
-                error = True
-
-        if error is True:
-            return False
-        else:
-            return True
+                if verbose:
+                    print("Error: Block {0} is neither numeric nor has it "
+                          "tasks".format(block.data['name']))
+                return False
+        return True
 
     def output(self):
         """Missing DocString
@@ -750,7 +753,7 @@ class Job:
     def send(self, verbose=False):
         """Missing DocString
 
-        :param optional bool verbose: True (default) to force the sendServer()
+        :param optional bool verbose: Set to True forces the sendServer()
             function to print out more information.
         :return tuple(bool, any): the return tuple of sendServer
             - bool that indicates whether the sending was successful or not
