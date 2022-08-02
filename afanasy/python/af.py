@@ -540,7 +540,7 @@ class Block:
         self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
                                                    'skipthumbnails')
 
-    def skipExistingFiles(self, i_size_min = -1, i_size_max = -1):
+    def skipExistingFiles(self, i_size_min=-1, i_size_max=-1):
         self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
                                                    'skipexistingfiles')
         if i_size_min > 0:
@@ -548,7 +548,7 @@ class Block:
         if i_size_max > 0:
             self.data['file_size_max'] = i_size_max
 
-    def checkRenderedFiles(self, i_size_min = -1, i_size_max = -1):
+    def checkRenderedFiles(self, i_size_min=-1, i_size_max=-1):
         self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
                                                    'checkrenderedfiles')
         if i_size_min > 0:
@@ -755,9 +755,7 @@ class Job:
         return True
 
     def output(self):
-        """Missing DocString
-
-        :return:
+        """Print a dump of the whole Job dictionary for debugging.
         """
         self.fillBlocks()
         print(json.dumps(self.data, sort_keys=True, indent=4))
