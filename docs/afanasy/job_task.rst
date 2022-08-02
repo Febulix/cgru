@@ -2,14 +2,14 @@
 Job Task
 ========
 
-Tasks are exists only in non-numeric blocks, where each task can have its own name and command.
-In numeric blocks tasks are generated on demand, as numeric block enough has information to generate any task.
-Most blocks are numeric, as tasks are differ only by few numbers in a command.
+Tasks need to be set up only for non-numeric blocks where each task can have its own name and command.
+For numeric blocks, tasks get generated automatically on demand and a numeric block has enough information to generate its tasks.
+Most blocks are numeric, as tasks differ only by a few values (like frame numbers) in a command.
 
-There are some cases when tasks commands differ by some strings, and block can't be described by frame numbers.
+There are some cases where task commands differ in several strings and thus the block cannot describe them by frame numbers.
 For example *ffmpeg* converts various sequences and movies in a single job block (Rules constructs such jobs for previews).
 
-
+Python example on how to create a job with a non-numeric block and custom tasks:
 .. code-block:: python
 
    import af
@@ -29,52 +29,53 @@ For example *ffmpeg* converts various sequences and movies in a single job block
 Attributes
 ==========
 
-If block is numeric all this attributes are generated on the fly by block.
+If a block is set to be numeric, all this attributes are generated on the fly by the block.
 
 name
 ----
 ``af.Task(str)``
 
-Task name. Generated, if block is numeric.
+Task name. Generated, if the block is numeric.
 
 command
 -------
 ``af.Task.setCommand(str)``
 
-Command to execute. Generated, if block is numeric.
+Command to execute. Generated, if the block is numeric.
 
 files[]
 -------
 ``af.Task.setFiles(str[])``
 
-Files for preview. Generated, if block is numeric.
+Files for preview. Generated, if the block is numeric.
 
 environment
 -----------
 ``af.Task.setEnv(name, value)``
 
-Tasks process extra environment.
-It will be merged with a block extra environment.
+Extra environment variables for the tasks process.
+These variables will be merged with the blocks extra environment variables.
 
 tst
 ---
-Time when task was started (last start).
+Time when the task was started (last start).
 
 tdn
 ---
-Time when task was done (last finish).
+Time when the task was done (last finish).
 
 str
 ---
-Number of times task has started (it can be manually or automatically restarted).
+Number of times the task has been started (it can be manually or automatically restarted).
 
 per
 ---
-Running task progress percentage.
+Progress percentage of the running task.
 
 frm
 ---
-Running frame for multiframe tasks which can be produced by numeric blocks when frames per render parameter > 1.
+Running frame for multiframe tasks.
+Multiframe tasks can be produced by numeric blocks when the parameter "frames per render" is > 1.
 
 pfr
 ---
