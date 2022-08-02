@@ -22,12 +22,19 @@ def checkConfigFile(i_path, i_verbose):
             cfile = open(i_path, 'w')
         except Exception as err:
             if err.errno == errno.EPERM or err.errno == errno.EACCES:
-                if i_verbose: print('Warning! Permission error while opening %s' % i_path)
+                if i_verbose:
+                    print('Warning! Permission error while opening '
+                          '%s' % i_path)
             elif err.errno is errno.EROFS:
-                if i_verbose: print('Warning! Could not edit %s, read-only file system' % i_path)
+                if i_verbose:
+                    print('Warning! Could not edit %s, read-only file '
+                          'system' % i_path)
             else:
-                if i_verbose: print('Warning! Unexpected error while opening %s.' % i_path)
-                if i_verbose: print('Error: %s' % err)
+                if i_verbose:
+                    print('Warning! Unexpected error while opening '
+                          '%s.' % i_path)
+                if i_verbose:
+                    print('Error: %s' % err)
             status = False
         else:
             cfile.write('{"cgru_config":{\n')
@@ -42,10 +49,15 @@ def checkConfigFile(i_path, i_verbose):
             os.chmod(i_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         except Exception as err:
             if err.errno == errno.EPERM or err.errno == errno.EACCES:
-                if i_verbose: print('Warning! Could not modify permissions for %s, permission denied.' % i_path)
+                if i_verbose:
+                    print('Warning! Could not modify permissions for %s, '
+                          'permission denied.' % i_path)
             else:
-                if i_verbose: print('Warning! Unexpected error while modifying the permissions for %s.' % i_path)
-                if i_verbose: print('Error: %s' % err)
+                if i_verbose:
+                    print('Warning! Unexpected error while modifying the '
+                          'permissions for %s.' % i_path)
+                if i_verbose:
+                    print('Error: %s' % err)
     return status
 
 
@@ -71,7 +83,7 @@ class Config:
             elif sys.platform[:5] == 'linux':
                 self.Vars['platform'].append('linux')
             if self.verbose:
-                print('Platform: "%s"' % ','.join( self.Vars['platform']))
+                print('Platform: "%s"' % ','.join(self.Vars['platform']))
 
             self.Vars['HOSTNAME'] = socket.gethostname().lower()
 
@@ -82,7 +94,9 @@ class Config:
             except KeyError as e:
                 raise KeyError('Environment variable CGRU_LOCATION not set.')
 
-            configfiles.append(os.path.join(cgrulocation, 'config_default.json'))
+            configfiles.append(
+                    os.path.join(cgrulocation, 'config_default.json')
+                )
 
             # Definitions which always must preset:
             self.Vars['CGRU_LOCATION'] = cgrulocation
@@ -151,7 +165,7 @@ class Config:
                 configfiles.append(customconfig)
 
             if sys.platform.find('win') == 0 or os.geteuid() != 0:
-                if not os.path.exists( self.Vars['HOME_CGRU']):
+                if not os.path.exists(self.Vars['HOME_CGRU']):
                     try:
                         os.makedirs(self.Vars['HOME_CGRU'])
                     except:
@@ -169,18 +183,18 @@ class Config:
         for name in self.Vars:
 
             env_name = 'CGRU_' + name.upper()
-            env_val  = os.getenv( env_name)
+            env_val = os.getenv(env_name)
             if env_val is None:
                 continue
 
             if self.verbose:
-                print('%s=%s' %  (env_name ,env_val))
+                print('%s=%s' % (env_name, env_val))
 
-            if isinstance( self.Vars[name], int):
+            if isinstance(self.Vars[name], int):
                 self.Vars[name] = int(env_val)
-            elif isinstance( self.Vars[name], float):
+            elif isinstance(self.Vars[name], float):
                 self.Vars[name] = float(env_val)
-            elif isinstance( self.Vars[name], bool):
+            elif isinstance(self.Vars[name], bool):
                 self.Vars[name] = bool(env_val)
             else:
                 self.Vars[name] = env_val
@@ -204,9 +218,12 @@ class Config:
         success = True
         try:
             if sys.hexversion > 0x02070000:
-                obj = json.loads( filedata, object_pairs_hook=collections.OrderedDict)['cgru_config']
+                obj = json.loads(
+                        filedata,
+                        object_pairs_hook=collections.OrderedDict
+                    )['cgru_config']
             else:
-                obj = json.loads( filedata)['cgru_config']
+                obj = json.loads(filedata)['cgru_config']
         except:  # TODO: Too broad exception clause
             success = False
             print(filename)
@@ -222,7 +239,6 @@ class Config:
                 afile = os.path.join(os.path.dirname(filename), afile)
                 self.load(afile)
                 continue
-
 
     def getVars(self, o_vars, i_obj, i_filename):
         for key in i_obj:
@@ -251,6 +267,7 @@ class Config:
 if len(VARS) == 0:
     Config()
 
+
 def reconfigure(Verbose=False):
     """Clear the VARS dictionary and calls Config() with optional verbosity.
 
@@ -259,10 +276,12 @@ def reconfigure(Verbose=False):
     VARS = dict()
     Config(Verbose=False)
 
+
 def getVar(i_var):
-    if not i_var in VARS:
+    if i_var not in VARS:
         return None
     return VARS[i_var]
+
 
 def writeVars(variables, configfile=VARS['config_file_home']):
     with open(configfile, 'r') as file_:
