@@ -251,9 +251,13 @@ class Config:
 if len(VARS) == 0:
     Config()
 
-def reconfigure():
+def reconfigure(Verbose=False):
+    """Clear the VARS dictionary and calls Config() with optional verbosity.
+
+    :param optional bool Verbose: Passed on to Config() (False by default)
+    """
     VARS = dict()
-    Config()
+    Config(Verbose=False)
 
 def getVar(i_var):
     if not i_var in VARS:
