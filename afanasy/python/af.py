@@ -125,7 +125,10 @@ class Block:
         self.tasks = []
         if service is not None and len(service):
             if self.setService(service):
-                __import__("services", globals(), locals(), [self.data["service"]])
+                __import__("services",
+                           globals(),
+                           locals(),
+                           [self.data["service"]])
                 parser = eval(('services.%s.parser') % self.data["service"])
                 self.setParser(parser)
 
@@ -177,13 +180,15 @@ class Block:
             print('Error: Block.setNumeric: Block already has tasks.')
             return
         if end < start:
-            print('Error: Block.setNumeric: end < start (%d < %d)' % (end, start))
+            print('Error: Block.setNumeric: end < start (%d < %d)' % (end,
+                                                                      start))
             end = start
         if pertask < 1:
             print('Error: Block.setNumeric: pertask < 1 (%d < 1)' % pertask)
             pertask = 1
         # self.data["numeric"] = True
-        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'], 'numeric')
+        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
+                                                   'numeric')
         self.data["frame_first"] = start
         self.data["frame_last"] = end
         self.data["frames_per_task"] = pertask
@@ -430,7 +435,8 @@ class Block:
     def setDependSubTask(self):
         """Missing DocString
         """
-        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'], 'dependsubtask')
+        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
+                                                   'dependsubtask')
 
     def setTasksMaxRunTime(self, value):
         """Missing DocString
@@ -531,17 +537,20 @@ class Block:
             self.data["need_properties"] = value
 
     def skipThumbnails(self):
-        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'], 'skipthumbnails')
+        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
+                                                   'skipthumbnails')
 
     def skipExistingFiles(self, i_size_min = -1, i_size_max = -1):
-        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'], 'skipexistingfiles')
+        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
+                                                   'skipexistingfiles')
         if i_size_min > 0:
             self.data['file_size_min'] = i_size_min
         if i_size_max > 0:
             self.data['file_size_max'] = i_size_max
 
     def checkRenderedFiles(self, i_size_min = -1, i_size_max = -1):
-        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'], 'checkrenderedfiles')
+        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
+                                                   'checkrenderedfiles')
         if i_size_min > 0:
             self.data['file_size_min'] = i_size_min
         if i_size_max > 0:
@@ -574,13 +583,15 @@ class Block:
                   'service was not specified.')
             return False
 
-        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'], 'multihost')
+        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
+                                                   'multihost')
         self.data['multihost_min'] = h_min
         self.data['multihost_max'] = h_max
         self.data['multihost_max_wait'] = h_max_wait
 
         if master_on_slave:
-            self.data['flags'] = afcommon.setBlockFlag(self.data['flags'], 'masteronslave')
+            self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
+                                                       'masteronslave')
 
         if service:
             self.data['multihost_service'] = service
@@ -592,7 +603,8 @@ class Block:
         if not afcommon.checkBlockFlag(self.data['flags'], 'multihost'):
             print('Block::setSlaveLostIgnore: Block is not multihost.')
             return
-        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'], 'slavelostignore')
+        self.data['flags'] = afcommon.setBlockFlag(self.data['flags'],
+                                                   'slavelostignore')
 
     def fillTasks(self):
         """Missing DocString
@@ -1193,7 +1205,8 @@ class Cmd:
         """
         self.action = 'action'
         self.data['type'] = 'monitors'
-        self.data['mask'] = cgruconfig.VARS['USERNAME'] + '@' + cgruconfig.VARS['HOSTNAME'] + '.*'
+        self.data['mask'] = cgruconfig.VARS['USERNAME'] + '@' + \
+            cgruconfig.VARS['HOSTNAME'] + '.*'
         self.data['operation'] = {'type': 'exit'}
         self._sendRequest()
 
@@ -1357,7 +1370,7 @@ class Cmd:
                                   'tasks': tasks_data}
         return self._sendRequest(verbose)
     
-    def setJobPriorityById(self,jobId, priority, verbose=False):
+    def setJobPriorityById(self, jobId, priority, verbose=False):
         """Missing DocString
 
                 :param jobId:
