@@ -112,13 +112,18 @@ def replaceSeparators(path, path_from, path_to):
 
 
 class PathMap:
-    """Missing DocString
-
-    :param UnixSeparators:
-    :param Verbose:
+    """Used to translate paths and taking care of backward and forward slashes
+    for UNIX and Windows.
     """
 
     def __init__(self, UnixSeparators=False, Verbose=False):
+        """Initialize PathMap.
+
+        :param optional bool UnixSeparators: Use UNIX separators (False by
+            default)
+        :param optional bool Verbose: Print additional information if set to
+            True (False by default)
+        """
         self.initialized = False
         self.UnixSeparators = UnixSeparators
         self.PathClient = []
