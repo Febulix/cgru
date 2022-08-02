@@ -15,7 +15,7 @@ def errorExit(msg):
 
 
 def pathToUNIX(path):
-	"""Correct arguments for Nuke UNIX slaches
+	"""Correct arguments for Nuke UNIX slashes
 	"""
 	path = path.replace('\\', '/')
 	path = path[:1] + path[1:].replace('//', '/')
