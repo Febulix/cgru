@@ -114,15 +114,21 @@ def replaceSeparators(path, path_from, path_to):
 class PathMap:
     """Used to translate paths and taking care of backward and forward slashes
     for UNIX and Windows.
+
+    :param optional bool UnixSeparators: Use UNIX separators when translating
+        paths (False by default)
+    :param optional bool Verbose: Force the init() function to print all
+        client to server path mappings (default is False)
     """
 
     def __init__(self, UnixSeparators=False, Verbose=False):
-        """Initialize PathMap.
+        """Initialize member variables and call init() when any path mapping is
+        configured in config.json files.
 
         :param optional bool UnixSeparators: Use UNIX separators (False by
             default)
-        :param optional bool Verbose: Print additional information if set to
-            True (False by default)
+        :param optional bool Verbose: Force the init() function to print all
+            client to server path mappings (default is False)
         """
         self.initialized = False
         self.UnixSeparators = UnixSeparators
@@ -156,7 +162,7 @@ class PathMap:
         if Verbose:
             print('Path map:')
             n = 0
-            for path in self.PathClient:
+            for path in self.PathClient:  # TODO: Use "zip" here
                 print('    "%s" <-> "%s"' % (path, self.PathServer[n]))
                 n += 1
             if self.UnixSeparators:
@@ -179,6 +185,7 @@ class PathMap:
 
         position = 0
 
+        # Skips leading path separators. Return if path consists only of these.
         while newpath[position] in PathSeparators:
             position += 1
             if position >= len(newpath):
@@ -203,9 +210,12 @@ class PathMap:
                     path_search = path_search.lower()
                     path_from = path_from.replace('/', '\\').lower()
 
+                # Check if path_search starts with path_from (ignoring slashes)
                 if path_search.find(path_from) == 0:
+                    # path_search starts with path_from
                     path_found = True
                 else:
+                    # turn backward slashes into forward slashes in path_from
                     path_from = path_from.replace('\\', '/')
                     if path_search.find(path_from) == 0:
                         path_found = True
@@ -251,7 +261,7 @@ class PathMap:
         :param Verbose:
         :return:
         """
-        return self.translatePath(path, True, Verbose)
+        return self.translatePath(path, toserver=True, Verbose=Verbose)
 
     def toClient(self, path, Verbose=False):
         """Missing DocString
@@ -260,7 +270,7 @@ class PathMap:
         :param Verbose:
         :return:
         """
-        return self.translatePath(path, False, Verbose)
+        return self.translatePath(path, toserver=False, Verbose=Verbose)
 
     def translateFile(self, infile, outfile, toserver, SearchStrings, Verbose):
         """Missing DocString
