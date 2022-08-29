@@ -274,7 +274,7 @@ def reconfigure(Verbose=False):
     :param optional bool Verbose: Passed on to Config() (False by default)
     """
     VARS = dict()
-    Config(Verbose=False)
+    Config(Verbose=Verbose)
 
 
 def getVar(i_var):
