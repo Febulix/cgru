@@ -395,10 +395,10 @@ def copyJobFile(fileName, jobName='', fileExtension=''):
 
 
 def toStr(data):
-    """Missing DocString
+    """Returns data as standard utf-8 encoded python string.
 
-    :param data:
-    :return:
+    :param str data: some string object with unknown encoding
+    :return str: utf-8 encoded python string
     """
     if isinstance(data, str):
         return data
