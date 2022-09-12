@@ -196,7 +196,11 @@ class PathMap:
         while position != -1:
             path_search = newpath[position:]
             # print('position # %d/%d : "%s"' % (position, len(newpath), path_search))
+
+            # Try to apply one mapping after another to the path parameter
             for i in range(0, len(self.PathServer)):
+
+                # Switch mapping direction depending on the toserver bool
                 if toserver:
                     path_from = self.PathClient[i]
                     path_to = self.PathServer[i]
@@ -206,11 +210,12 @@ class PathMap:
 
                 path_found = False
 
+                # Convert to backward slashes if current client runs windows
                 if 'windows' in cgruconfig.VARS['platform'] and toserver:
                     path_search = path_search.lower()
                     path_from = path_from.replace('/', '\\').lower()
 
-                # Check if path_search starts with path_from (ignoring slashes)
+                # Find "path_from" str without considering the slash direction 
                 if path_search.find(path_from) == 0:
                     # path_search starts with path_from
                     path_found = True
@@ -223,9 +228,9 @@ class PathMap:
                 if path_found:
                     part1 = newpath[:position]
                     part2 = newpath[position + len(path_from):]
-                    if not self.UnixSeparators:
-                        if 'windows' in cgruconfig.VARS['platform'] \
-                                and not toserver:
+                    if not self.UnixSeparators \
+                        and 'windows' in cgruconfig.VARS['platform'] \
+                        and not toserver:
                             path_to = path_to.replace('/', '\\')
                     part2 = replaceSeparators(part2, path_from, path_to)
                     position = len(part1 + path_to)
@@ -255,7 +260,7 @@ class PathMap:
         return newpath
 
     def toServer(self, path, Verbose=False):
-        """Missing DocString
+        """cgrupathmap.py
 
         :param path:
         :param Verbose:
@@ -264,7 +269,8 @@ class PathMap:
         return self.translatePath(path, toserver=True, Verbose=Verbose)
 
     def toClient(self, path, Verbose=False):
-        """Missing DocString
+        """
+        Wrapping the translatePath() function... Missing DocString
 
         :param path:
         :param Verbose:
@@ -335,17 +341,24 @@ class PathMap:
                                   Verbose)
 
     def toClientFile(self, infile, outfile, SearchStrings=None, Verbose=False):
-        """Missing DocString
+        """Creates a copy of the infile and saves it in outfile but converts
+        all paths.
+        Converts paths in lines of the infile and 
+        Wrapper function for the translateFile() function that uses
+        translatePath() to convert paths that occur in lines the infile
 
-        :param infile:
-        :param outfile:
-        :param SearchStrings:
-        :param Verbose:
-        :return:
+        :param str infile:
+        :param str outfile:
+        :param list of str SearchStrings:
+        :param bool Verbose:
         """
         if SearchStrings is None:
             SearchStrings = []
 
         return self.translateFile(
-            infile, outfile, False, SearchStrings, Verbose
+            infile=infile,
+            outfile=outfile,
+            toserver=False,
+            SearchStrings=SearchStrings,
+            Verbose=Verbose
         )

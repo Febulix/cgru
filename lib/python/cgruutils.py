@@ -395,7 +395,8 @@ def copyJobFile(fileName, jobName='', fileExtension=''):
 
 
 def toStr(data):
-    """Returns data as standard utf-8 encoded python string.
+    """Return data as standard utf-8 encoded python string, regardless of Python version (2.x or 3.x)
+    and what is has been before (e.g. unicode)
 
     :param str data: some string object with unknown encoding
     :return str: utf-8 encoded python string

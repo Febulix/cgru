@@ -168,7 +168,7 @@ class Config:
                 if not os.path.exists(self.Vars['HOME_CGRU']):
                     try:
                         os.makedirs(self.Vars['HOME_CGRU'])
-                    except:
+                    except Exception:
                         pass
 
                 if os.path.exists(self.Vars['HOME_CGRU']):
@@ -178,8 +178,10 @@ class Config:
 
         for filename in configfiles:
             self.load(filename)
+            if self.verbose:
+                print('Loading config file: ' + str(filename))
 
-        # Get values overrides from environment:
+        # Get value overrides from environment:
         for name in self.Vars:
 
             env_name = 'CGRU_' + name.upper()
@@ -188,7 +190,7 @@ class Config:
                 continue
 
             if self.verbose:
-                print('%s=%s' % (env_name, env_val))
+                print('{0}={0}'.format(env_name, env_val))
 
             if isinstance(self.Vars[name], int):
                 self.Vars[name] = int(env_val)
@@ -210,6 +212,8 @@ class Config:
         if self.verbose:
             print('Trying to open %s' % filename)
         if not os.path.isfile(filename):
+            if self.verbose:
+                print('-> ERROR: Config file %s not available!' % filename)
             return
 
         with open(filename, 'r') as f:
@@ -224,7 +228,7 @@ class Config:
                     )['cgru_config']
             else:
                 obj = json.loads(filedata)['cgru_config']
-        except:  # TODO: Too broad exception clause
+        except Exception:  # TODO: Too broad exception clause
             success = False
             print(filename)
             print(str(sys.exc_info()[1]))
